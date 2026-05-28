@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Presensi & Lembur</title>
+    <title>Dashboard Presensi Auto-Save</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #10b981;
             --primary-hover: #059669;
-            --accent: #f59e0b;
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
-            --text-main: #000000; /* Hitam tegas untuk teks utama */
+            --text-main: #000000;
             --text-muted: #475569;
             --border-color: #cbd5e1;
             --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
@@ -37,7 +36,6 @@
             gap: 20px;
         }
 
-        /* Top Header */
         .app-header {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: white;
@@ -52,9 +50,7 @@
         }
 
         .app-header h1 { margin: 0; font-size: 1.35rem; font-weight: 700; }
-        .app-header p { margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8; }
-
-        /* Tombol Tambah */
+        
         .btn-add-day {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -67,10 +63,9 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
 
-        /* Table Card */
         .table-card {
             background: var(--bg-card);
             border-radius: 12px;
@@ -79,141 +74,49 @@
             overflow: hidden;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        table { width: 100%; border-collapse: collapse; }
 
         th {
             background-color: #f1f5f9;
-            color: #000000; /* Hitam tegas untuk header laptop */
+            color: #000000;
             font-weight: 700;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
             padding: 16px;
             border: 1px solid var(--border-color);
         }
 
-        th:first-child {
-            text-align: left;
-        }
+        td { padding: 12px 16px; border: 1px solid var(--border-color); text-align: center; }
 
-        td {
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        /* Kolom Hari */
-        .day-combine-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
-        }
-
+        .day-combine-cell { display: flex; align-items: center; gap: 12px; text-align: left; }
         .day-name { font-weight: 700; color: #000000; }
         .date-badge { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
 
-        /* Status Checkbox */
         .status-checkbox {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            background: #fff;
+            appearance: none; width: 22px; height: 22px; border: 2px solid var(--border-color);
+            border-radius: 6px; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; background: #fff;
         }
+        .status-checkbox:checked { background: #10b981; border-color: #10b981; }
+        .status-checkbox:checked::before { content: "✓"; color: white; font-weight: 900; }
 
-        .status-checkbox:checked {
-            background: #10b981;
-            border-color: #10b981;
-        }
-
-        .status-checkbox:checked::before {
-            content: "✓";
-            color: white;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        /* Inputs & Select */
         .input-time, .select-overtime {
-            border: 1.5px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            color: #000000;
-            background: #ffffff;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            font-weight: 500;
+            border: 1.5px solid var(--border-color); border-radius: 8px; padding: 8px;
+            font-family: inherit; font-size: 0.95rem; color: #000000;
+            width: 100%; box-sizing: border-box; text-align: center; font-weight: 500;
         }
 
-        .input-time:focus, .select-overtime:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: #f0fdf4;
-        }
-
-        .has-overtime {
-            background-color: #fff7ed !important;
-            color: #ea580c !important;
-            border-color: #f97316 !important;
-            font-weight: 700;
-        }
+        .has-overtime { background-color: #fff7ed !important; color: #ea580c !important; border-color: #f97316 !important; font-weight: 700; }
 
         .mobile-label { display: none; }
 
-        /* --- RESPONSIVE MOBILE SCRIPT --- */
         @media (max-width: 650px) {
             thead { display: none; }
-            
-            tr {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                border-bottom: 8px solid #cbd5e1;
-            }
-
-            td {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px !important;
-                border: 0.5px solid var(--border-color) !important;
-                background: #fff;
-            }
-
-            .td-day-block { 
-                grid-column: span 2; 
-                background: #f8fafc;
-            }
-
-            .td-overtime-block {
-                grid-column: span 2;
-            }
-
-            /* Perbaikan Label Mobile: BOLD & HITAM TEGAS */
-            .mobile-label { 
-                display: block; 
-                font-size: 0.75rem; 
-                color: #000000; /* Hitam Tegas */
-                text-transform: uppercase; 
-                font-weight: 700; /* Bold */
-                margin-bottom: 8px;
-                letter-spacing: 0.5px;
-            }
-
-            .input-time, .select-overtime { max-width: 100%; }
-            .btn-add-day { width: 100%; justify-content: center; }
+            tr { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 8px solid #cbd5e1; }
+            td { display: flex; flex-direction: column; align-items: flex-start; padding: 15px !important; border: 0.5px solid var(--border-color) !important; background: #fff; }
+            .td-day-block { grid-column: span 2; background: #f8fafc; }
+            .td-overtime-block { grid-column: span 2; }
+            .mobile-label { display: block; font-size: 0.75rem; color: #000000; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -223,7 +126,7 @@
     <div class="app-header">
         <div>
             <h1>Money Management</h1>
-            <p>Log Presensi & Lembur</p>
+            <p>Data tersimpan otomatis di browser ini</p>
         </div>
         <button class="btn-add-day" onclick="tambahHariBaru()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -242,93 +145,137 @@
                 </tr>
             </thead>
             <tbody id="attendance-rows">
-                <tr>
-                    <td class="td-day-block">
-                        <div class="day-combine-cell">
-                            <input type="checkbox" class="status-checkbox" checked>
-                            <div class="day-info">
-                                <span class="day-name">SELASA</span>
-                                <span class="date-badge">26/05/2026</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="mobile-label">Jam Masuk</span>
-                        <input type="time" class="input-time" value="09:00">
-                    </td>
-                    <td>
-                        <span class="mobile-label">Jam Keluar</span>
-                        <input type="time" class="input-time" value="17:00">
-                    </td>
-                    <td class="td-overtime-block">
-                        <span class="mobile-label">Keterangan Lembur</span>
-                        <select class="select-overtime" onchange="styleSelect(this)">
-                            <option value="">-</option>
-                            <option value="1">Lembur 1 jam</option>
-                            <option value="2">Lembur 2 jam</option>
-                            <option value="3">Lembur 3 jam</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
+                </tbody>
         </table>
     </div>
+    <button onclick="hapusSemuaData()" style="margin-top: 20px; color: #ef4444; background: none; border: none; cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Hapus Semua Data & Reset</button>
 </div>
 
 <script>
-    const namaHari = ["RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU", "SENIN", "SELASA"];
-    let hariIndex = 0; 
-    let tanggalSkg = new Date(2026, 4, 26); 
+    const namaHariList = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+    
+    // 1. Load data saat aplikasi dibuka
+    window.onload = function() {
+        loadData();
+    };
 
+    // 2. Fungsi Tambah Hari Baru
     function tambahHariBaru() {
-        tanggalSkg.setDate(tanggalSkg.getDate() + 1);
-        
-        let dd = String(tanggalSkg.getDate()).padStart(2, '0');
-        let mm = String(tanggalSkg.getMonth() + 1).padStart(2, '0');
-        let yyyy = tanggalSkg.getFullYear();
-        let formatTanggal = `${dd}/${mm}/${yyyy}`;
-
         const tbody = document.getElementById('attendance-rows');
-        let row = tbody.insertRow(-1);
+        let tanggalTerakhir = new Date();
+
+        // Cek tanggal dari baris terakhir yang ada
+        if (tbody.rows.length > 0) {
+            const lastDateString = tbody.lastElementChild.querySelector('.date-badge').innerText;
+            const parts = lastDateString.split('/');
+            tanggalTerakhir = new Date(parts[2], parts[1] - 1, parts[0]);
+            tanggalTerakhir.setDate(tanggalTerakhir.getDate() + 1);
+        }
+
+        const dataBaru = {
+            hari: namaHariList[tanggalTerakhir.getDay()],
+            tanggal: formatDate(tanggalTerakhir),
+            status: true,
+            masuk: "09:00",
+            keluar: "17:00",
+            lembur: ""
+        };
+
+        buatBarisTabel(dataBaru);
+        saveData();
+    }
+
+    // 3. Fungsi Membuat Baris HTML
+    function buatBarisTabel(data) {
+        const tbody = document.getElementById('attendance-rows');
+        const row = tbody.insertRow(-1);
 
         row.innerHTML = `
             <td class="td-day-block">
                 <div class="day-combine-cell">
-                    <input type="checkbox" class="status-checkbox" checked>
+                    <input type="checkbox" class="status-checkbox" ${data.status ? 'checked' : ''} onchange="saveData()">
                     <div class="day-info">
-                        <span class="day-name">${namaHari[hariIndex]}</span>
-                        <span class="date-badge">${formatTanggal}</span>
+                        <span class="day-name">${data.hari}</span>
+                        <span class="date-badge">${data.tanggal}</span>
                     </div>
                 </div>
             </td>
             <td>
                 <span class="mobile-label">Jam Masuk</span>
-                <input type="time" class="input-time" value="00:00">
+                <input type="time" class="input-time" value="${data.masuk}" onchange="saveData()">
             </td>
             <td>
                 <span class="mobile-label">Jam Keluar</span>
-                <input type="time" class="input-time" value="00:00">
+                <input type="time" class="input-time" value="${data.keluar}" onchange="saveData()">
             </td>
             <td class="td-overtime-block">
                 <span class="mobile-label">Keterangan Lembur</span>
-                <select class="select-overtime" onchange="styleSelect(this)">
-                    <option value="">-</option>
-                    <option value="1">Lembur 1 jam</option>
-                    <option value="2">Lembur 2 jam</option>
-                    <option value="3">Lembur 3 jam</option>
+                <select class="select-overtime ${data.lembur ? 'has-overtime' : ''}" onchange="styleSelect(this); saveData()">
+                    <option value="" ${data.lembur === "" ? 'selected' : ''}>-</option>
+                    <option value="1" ${data.lembur === "1" ? 'selected' : ''}>Lembur 1 jam</option>
+                    <option value="2" ${data.lembur === "2" ? 'selected' : ''}>Lembur 2 jam</option>
+                    <option value="3" ${data.lembur === "3" ? 'selected' : ''}>Lembur 3 jam</option>
                 </select>
             </td>
         `;
+    }
 
-        hariIndex = (hariIndex + 1) % namaHari.length;
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    // 4. SISTEM SAVE (Simpan ke LocalStorage)
+    function saveData() {
+        const rows = document.querySelectorAll('#attendance-rows tr');
+        const allData = [];
+
+        rows.forEach(row => {
+            allData.push({
+                hari: row.querySelector('.day-name').innerText,
+                tanggal: row.querySelector('.date-badge').innerText,
+                status: row.querySelector('.status-checkbox').checked,
+                masuk: row.querySelectorAll('.input-time')[0].value,
+                keluar: row.querySelectorAll('.input-time')[1].value,
+                lembur: row.querySelector('.select-overtime').value
+            });
+        });
+
+        localStorage.setItem('attendance_storage', JSON.stringify(allData));
+    }
+
+    // 5. SISTEM LOAD (Ambil dari LocalStorage)
+    function loadData() {
+        const storage = localStorage.getItem('attendance_storage');
+        if (storage) {
+            const allData = JSON.parse(storage);
+            allData.forEach(data => buatBarisTabel(data));
+        } else {
+            // Data default jika penyimpanan masih kosong
+            const hariIni = new Date();
+            buatBarisTabel({
+                hari: namaHariList[hariIni.getDay()],
+                tanggal: formatDate(hariIni),
+                status: true,
+                masuk: "09:00",
+                keluar: "17:00",
+                lembur: ""
+            });
+        }
+    }
+
+    // Fungsi Pembantu
+    function formatDate(date) {
+        let dd = String(date.getDate()).padStart(2, '0');
+        let mm = String(date.getMonth() + 1).padStart(2, '0');
+        let yyyy = date.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
     }
 
     function styleSelect(select) {
-        if (select.value !== "") {
-            select.classList.add('has-overtime');
-        } else {
-            select.classList.remove('has-overtime');
+        if (select.value !== "") select.classList.add('has-overtime');
+        else select.classList.remove('has-overtime');
+    }
+
+    function hapusSemuaData() {
+        if (confirm("Hapus semua catatan? Data tidak bisa dikembalikan.")) {
+            localStorage.removeItem('attendance_storage');
+            location.reload();
         }
     }
 </script>
