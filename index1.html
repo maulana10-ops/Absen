@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Presensi & Lembur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --accent: #f59e0b;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #000000; /* Hitam tegas untuk teks utama */
+            --text-muted: #475569;
+            --border-color: #cbd5e1;
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Top Header */
+        .app-header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 24px 28px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .app-header h1 { margin: 0; font-size: 1.35rem; font-weight: 700; }
+        .app-header p { margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8; }
+
+        /* Tombol Tambah */
+        .btn-add-day {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #000000; /* Hitam tegas untuk header laptop */
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        th:first-child {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        /* Kolom Hari */
+        .day-combine-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .day-name { font-weight: 700; color: #000000; }
+        .date-badge { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+
+        /* Status Checkbox */
+        .status-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            background: #fff;
+        }
+
+        .status-checkbox:checked {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .status-checkbox:checked::before {
+            content: "✓";
+            color: white;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        /* Inputs & Select */
+        .input-time, .select-overtime {
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #000000;
+            background: #ffffff;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .input-time:focus, .select-overtime:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .has-overtime {
+            background-color: #fff7ed !important;
+            color: #ea580c !important;
+            border-color: #f97316 !important;
+            font-weight: 700;
+        }
+
+        .mobile-label { display: none; }
+
+        /* --- RESPONSIVE MOBILE SCRIPT --- */
+        @media (max-width: 650px) {
+            thead { display: none; }
+            
+            tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                border-bottom: 8px solid #cbd5e1;
+            }
+
+            td {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px !important;
+                border: 0.5px solid var(--border-color) !important;
+                background: #fff;
+            }
+
+            .td-day-block { 
+                grid-column: span 2; 
+                background: #f8fafc;
+            }
+
+            .td-overtime-block {
+                grid-column: span 2;
+            }
+
+            /* Perbaikan Label Mobile: BOLD & HITAM TEGAS */
+            .mobile-label { 
+                display: block; 
+                font-size: 0.75rem; 
+                color: #000000; /* Hitam Tegas */
+                text-transform: uppercase; 
+                font-weight: 700; /* Bold */
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+
+            .input-time, .select-overtime { max-width: 100%; }
+            .btn-add-day { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="app-header">
+        <div>
+            <h1>Money Management</h1>
+            <p>Log Presensi & Lembur</p>
+        </div>
+        <button class="btn-add-day" onclick="tambahHariBaru()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Tambah Hari
+        </button>
+    </div>
+    
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Hari / Tanggal</th>
+                    <th>Jam Masuk</th>
+                    <th>Jam Keluar</th>
+                    <th>Keterangan Lembur</th>
+                </tr>
+            </thead>
+            <tbody id="attendance-rows">
+                <tr>
+                    <td class="td-day-block">
+                        <div class="day-combine-cell">
+                            <input type="checkbox" class="status-checkbox" checked>
+                            <div class="day-info">
+                                <span class="day-name">SELASA</span>
+                                <span class="date-badge">26/05/2026</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="mobile-label">Jam Masuk</span>
+                        <input type="time" class="input-time" value="09:00">
+                    </td>
+                    <td>
+                        <span class="mobile-label">Jam Keluar</span>
+                        <input type="time" class="input-time" value="17:00">
+                    </td>
+                    <td class="td-overtime-block">
+                        <span class="mobile-label">Keterangan Lembur</span>
+                        <select class="select-overtime" onchange="styleSelect(this)">
+                            <option value="">-</option>
+                            <option value="1">Lembur 1 jam</option>
+                            <option value="2">Lembur 2 jam</option>
+                            <option value="3">Lembur 3 jam</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const namaHari = ["RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU", "SENIN", "SELASA"];
+    let hariIndex = 0; 
+    let tanggalSkg = new Date(2026, 4, 26); 
+
+    function tambahHariBaru() {
+        tanggalSkg.setDate(tanggalSkg.getDate() + 1);
+        
+        let dd = String(tanggalSkg.getDate()).padStart(2, '0');
+        let mm = String(tanggalSkg.getMonth() + 1).padStart(2, '0');
+        let yyyy = tanggalSkg.getFullYear();
+        let formatTanggal = `${dd}/${mm}/${yyyy}`;
+
+        const tbody = document.getElementById('attendance-rows');
+        let row = tbody.insertRow(-1);
+
+        row.innerHTML = `
+            <td class="td-day-block">
+                <div class="day-combine-cell">
+                    <input type="checkbox" class="status-checkbox" checked>
+                    <div class="day-info">
+                        <span class="day-name">${namaHari[hariIndex]}</span>
+                        <span class="date-badge">${formatTanggal}</span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <span class="mobile-label">Jam Masuk</span>
+                <input type="time" class="input-time" value="00:00">
+            </td>
+            <td>
+                <span class="mobile-label">Jam Keluar</span>
+                <input type="time" class="input-time" value="00:00">
+            </td>
+            <td class="td-overtime-block">
+                <span class="mobile-label">Keterangan Lembur</span>
+                <select class="select-overtime" onchange="styleSelect(this)">
+                    <option value="">-</option>
+                    <option value="1">Lembur 1 jam</option>
+                    <option value="2">Lembur 2 jam</option>
+                    <option value="3">Lembur 3 jam</option>
+                </select>
+            </td>
+        `;
+
+        hariIndex = (hariIndex + 1) % namaHari.length;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function styleSelect(select) {
+        if (select.value !== "") {
+            select.classList.add('has-overtime');
+        } else {
+            select.classList.remove('has-overtime');
+        }
+    }
+</script>
+
+</body>
+</html>
