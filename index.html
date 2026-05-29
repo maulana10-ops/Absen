@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Kehadiran - Neon Glow Alert</title>
+    <title>Data Kehadiran Kerja</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --danger: #f43f5e;
             --radius-xl: 24px;
             --radius-md: 12px;
+            --money-gold: #f59e0b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,41 +50,55 @@
             padding: 25px;
             border-radius: var(--radius-xl);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .brand-title h1 { font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
         
-        /* --- ANIMASI TEKS BERKEDIP MERAH TERANG --- */
         .alert-text {
             font-size: 0.85rem;
-            margin-top: 8px;
             font-weight: 600;
             line-height: 1.5;
-            letter-spacing: 0.3px;
             animation: blinkRed 1.5s infinite ease-in-out;
         }
 
         @keyframes blinkRed {
-            0%, 100% {
-                color: #ff2a5f;
-                text-shadow: 0 0 4px rgba(255, 42, 95, 0.3);
-            }
-            50% {
-                color: #ffcbd7; /* Meredup ke warna pink sangat muda saat berkedip */
-                text-shadow: 0 0 15px rgba(255, 42, 95, 0.8), 0 0 30px rgba(255, 42, 95, 0.4);
-            }
+            0%, 100% { color: #ff2a5f; text-shadow: 0 0 4px rgba(255, 42, 95, 0.3); }
+            50% { color: #ffcbd7; text-shadow: 0 0 15px rgba(255, 42, 95, 0.8); }
         }
 
-        /* --- CONTAINER KARTU --- */
-        .wrapper-card {
-            background: transparent;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
+        /* --- KOTAK TOTAL GAJI TERAKUMULASI --- */
+        .salary-summary-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1.5px solid var(--money-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-top: 5px;
         }
+        .salary-summary-box span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--money-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .salary-summary-box h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            margin-top: 4px;
+        }
+
+        /* --- CONTAINER KARTU LOG --- */
+        .wrapper-card { background: transparent; border-radius: var(--radius-xl); overflow: hidden; }
 
         table { width: 100%; border-collapse: collapse; }
-
-        thead { display: none; } /* Tersembunyi untuk tampilan mobile card yang rapi */
+        thead { display: none; } 
         
         tr {
             display: flex;
@@ -97,13 +112,7 @@
             margin-bottom: 20px;
         }
 
-        td {
-            display: block;
-            width: 100% !important;
-            padding: 0 !important;
-            border: none !important;
-            background: transparent !important;
-        }
+        td { display: block; width: 100% !important; padding: 0 !important; border: none !important; }
 
         .bg-header-mobile {
             padding-bottom: 15px !important;
@@ -111,101 +120,65 @@
             margin-bottom: 5px;
         }
 
-        .day-group-cell {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-            text-align: center;
-        }
-        
-        .day-label-main { 
-            font-weight: 800; 
-            font-size: 1.4rem; 
-            color: var(--primary-teal); 
-            text-shadow: 0 0 10px rgba(45, 212, 191, 0.4); 
-            text-transform: uppercase; 
-            margin-bottom: 5px;
-        }
+        .day-group-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .day-label-main { font-weight: 800; font-size: 1.4rem; color: var(--primary-teal); text-shadow: 0 0 10px rgba(45, 212, 191, 0.4); text-transform: uppercase; }
 
         /* --- FORM CONTROLS --- */
-        .form-input-time, .form-select-custom, .form-input-date {
+        .form-input-time, .form-select-custom, .form-input-date, .form-input-salary {
             border: 1.5px solid var(--border-neon);
             box-shadow: var(--neon-glow);
             border-radius: var(--radius-md);
             padding: 12px; font-family: inherit; font-size: 1rem; font-weight: 600;
             width: 100%; text-align: center; color: #ffffff !important;
             background-color: rgba(15, 23, 42, 0.8) !important;
-            transition: all 0.25s ease-in-out;
             outline: none;
         }
         
         input[type="time"]::-webkit-calendar-picker-indicator,
-        input[type="date"]::-webkit-calendar-picker-indicator { 
-            filter: invert(1); 
-            cursor: pointer;
-        }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
         .form-input-time:focus, .form-select-custom:focus, .form-input-date:focus {
-            border-color: var(--primary-teal);
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
-            background-color: rgba(20, 30, 50, 0.9) !important;
+            border-color: var(--primary-teal); box-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
         }
 
         .active-overtime { 
-            background-color: rgba(251, 191, 36, 0.1) !important; 
-            color: #fbbf24 !important; 
-            border-color: rgba(251, 191, 36, 0.6) !important; 
-            box-shadow: 0 0 12px rgba(251, 191, 36, 0.3) !important;
+            background-color: rgba(251, 191, 36, 0.1) !important; color: #fbbf24 !important; 
+            border-color: rgba(251, 191, 36, 0.6) !important; box-shadow: 0 0 12px rgba(251, 191, 36, 0.3) !important;
         }
 
-        .mobile-grid-time {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        /* Style khusus kolom jumlah gaji harian */
+        .display-gaji-harian {
+            border-color: rgba(245, 158, 11, 0.4) !important;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.15) !important;
+            color: #f59e0b !important;
+            background-color: rgba(25, 20, 10, 0.8) !important;
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
         }
+
+        .mobile-grid-time { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .label-mobile-only {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--primary-teal);
-            text-transform: uppercase;
-            font-weight: 800;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(45, 212, 191, 0.3);
+            display: block; font-size: 0.75rem; color: var(--primary-teal); text-transform: uppercase;
+            font-weight: 800; margin-bottom: 6px; letter-spacing: 1px; text-shadow: 0 0 5px rgba(45, 212, 191, 0.3);
         }
+        .label-mobile-gaji { color: var(--money-gold) !important; text-shadow: 0 0 5px rgba(245, 158, 11, 0.3) !important; }
 
         /* Tombol Hapus */
-        .td-action {
-            margin-top: 5px;
-            padding-top: 15px !important;
-            border-top: 1px solid var(--border-neon) !important;
-        }
-
+        .td-action { margin-top: 5px; padding-top: 15px !important; border-top: 1px solid var(--border-neon) !important; }
         .btn-delete-row {
-            width: 100%;
-            background-color: rgba(244, 63, 94, 0.05); color: var(--danger); 
-            border: 1.5px solid rgba(244, 63, 94, 0.4);
-            box-shadow: 0 0 8px rgba(244, 63, 94, 0.15);
-            padding: 14px; border-radius: 12px; cursor: pointer; transition: 0.2s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            font-weight: 700; font-size: 0.85rem;
+            width: 100%; background-color: rgba(244, 63, 94, 0.05); color: var(--danger); 
+            border: 1.5px solid rgba(244, 63, 94, 0.4); box-shadow: 0 0 8px rgba(244, 63, 94, 0.15);
+            padding: 14px; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;
         }
-        .btn-delete-row:hover { 
-            background-color: var(--danger); color: white; 
-            box-shadow: 0 0 15px rgba(244, 63, 94, 0.5);
-            border-color: var(--danger);
-        }
+        .btn-delete-row:hover { background-color: var(--danger); color: white; box-shadow: 0 0 15px rgba(244, 63, 94, 0.5); }
 
         /* Control Panel Utama */
         .control-panel { display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 15px; }
-        
         .btn-action {
-            background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
-            border: 1px solid var(--primary-teal);
-            box-shadow: 0 5px 15px rgba(13, 148, 136, 0.3);
-            color: white; padding: 16px 32px; font-size: 1rem;
-            font-weight: 800; border-radius: 16px; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 12px;
-            transition: 0.3s; width: 100%; justify-content: center;
+            background: linear-gradient(135deg, #0d9488 0%, #115e59 100%); border: 1px solid var(--primary-teal);
+            box-shadow: 0 5px 15px rgba(13, 148, 136, 0.3); color: white; padding: 16px 32px; font-size: 1rem;
+            font-weight: 800; border-radius: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; width: 100%; justify-content: center;
         }
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(45, 212, 191, 0.5); }
         .btn-reset-db { color: #94a3b8; background: none; border: none; cursor: pointer; font-weight: 600; text-decoration: underline; }
@@ -218,6 +191,11 @@
         <div class="brand-title">
             <h1>DATA KEHADIRAN KERJA</h1>
             <p class="alert-text">Selalu isi data kehadiran ini, untuh bahan data evaluasi dan rekapitulasi kehadiran kerja</p>
+        </div>
+        
+        <div class="salary-summary-box">
+            <span>Total Pendapatan Terakumulasi</span>
+            <h2 id="grand-total-salary">Rp 0</h2>
         </div>
     </header>
     
@@ -239,6 +217,10 @@
 <script>
     const namaHariList = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
     const CONFIG_START_DATE_STR = "2026-05-26"; 
+
+    // --- NOMINAL BARU DI SINI ---
+    const GAJI_POKOK_PER_HARI = 272900;  
+    const TARIF_LEMBUR_PER_JAM = 60000;  // Berhasil diubah ke Rp 60.000 / Jam lembur
 
     window.onload = function() { muatDataApp(); };
 
@@ -265,9 +247,10 @@
             status: "MASUK",
             masuk: "",
             keluar: "",
-            lembur: ""
+            lembur: "",
+            gaji: GAJI_POKOK_PER_HARI
         });
-        simpanDataApp();
+        hitungDanSimpanData();
     }
 
     function renderBarisTabel(data) {
@@ -283,7 +266,7 @@
             </td>
             <td>
                 <span class="label-mobile-only">Status Kerja</span>
-                <select class="form-select-custom" onchange="simpanDataApp()">
+                <select class="form-select-custom select-status-kerja" onchange="hitungDanSimpanData()">
                     <option value="MASUK" ${data.status === "MASUK" ? 'selected' : ''}>✅ MASUK</option>
                     <option value="LIBUR" ${data.status === "LIBUR" ? 'selected' : ''}>🏠 LIBUR</option>
                     <option value="IZIN" ${data.status === "IZIN" ? 'selected' : ''}>📝 IZIN</option>
@@ -293,21 +276,25 @@
             <td class="mobile-grid-time">
                 <div>
                     <span class="label-mobile-only">Jam Masuk</span>
-                    <input type="time" class="form-input-time" value="${data.masuk}" onchange="simpanDataApp()">
+                    <input type="time" class="form-input-time" value="${data.masuk}" onchange="hitungDanSimpanData()">
                 </div>
                 <div>
                     <span class="label-mobile-only">Jam Keluar</span>
-                    <input type="time" class="form-input-time" value="${data.keluar}" onchange="simpanDataApp()">
+                    <input type="time" class="form-input-time" value="${data.keluar}" onchange="hitungDanSimpanData()">
                 </div>
             </td>
             <td>
                 <span class="label-mobile-only">Lembur</span>
-                <select class="select-overtime form-select-custom ${data.lembur ? 'active-overtime' : ''}" onchange="styleLembur(this); simpanDataApp()">
+                <select class="select-overtime form-select-custom ${data.lembur ? 'active-overtime' : ''}" onchange="styleLembur(this); hitungDanSimpanData()">
                     <option value="" ${data.lembur === "" ? 'selected' : ''}>- Tidak Lembur -</option>
                     <option value="1" ${data.lembur === "1" ? 'selected' : ''}>Lembur 1 jam</option>
                     <option value="2" ${data.lembur === "2" ? 'selected' : ''}>Lembur 2 jam</option>
                     <option value="3" ${data.lembur === "3" ? 'selected' : ''}>Lembur 3 jam</option>
                 </select>
+            </td>
+            <td>
+                <span class="label-mobile-only label-mobile-gaji">Jumlah Gaji Harian</span>
+                <input type="text" class="form-input-salary display-gaji-harian" value="Rp ${formatRupiah(data.gaji)}" readonly>
             </td>
             <td class="td-action">
                 <button class="btn-delete-row" onclick="hapusSatuBaris(this)">
@@ -326,37 +313,61 @@
             const objekTanggal = new Date(tanggalDipilih);
             row.querySelector('.day-label-main').innerText = namaHariList[objekTanggal.getDay()];
         }
-        simpanDataApp();
+        hitungDanSimpanData();
     }
 
     function hapusSatuBaris(btn) {
-        if (confirm("Hapus catatan ini?")) { btn.closest('tr').remove(); simpanDataApp(); }
+        if (confirm("Hapus catatan ini?")) { btn.closest('tr').remove(); hitungDanSimpanData(); }
     }
 
-    function simpanDataApp() {
+    function hitungDanSimpanData() {
         const rows = document.querySelectorAll('#attendance-rows tr');
         const storage = [];
+        let akumulasiGajiTotal = 0;
+
         rows.forEach(row => {
+            const statusKerja = row.querySelector('.select-status-kerja').value;
+            const jamLembur = row.querySelector('.select-overtime').value;
+            
+            let gajiHariIni = 0;
+            if (statusKerja === "MASUK") {
+                gajiHariIni += GAJI_POKOK_PER_HARI;
+                if (jamLembur !== "") {
+                    gajiHariIni += (parseInt(jamLembur) * TARIF_LEMBUR_PER_JAM);
+                }
+            }
+
+            row.querySelector('.display-gaji-harian').value = `Rp ${formatRupiah(gajiHariIni)}`;
+            akumulasiGajiTotal += gajiHariIni;
+
             storage.push({
                 hari: row.querySelector('.day-label-main').innerText,
                 tanggal: row.querySelector('.form-input-date').value,
-                status: row.querySelectorAll('.form-select-custom')[0].value,
+                status: statusKerja,
                 masuk: row.querySelectorAll('.form-input-time')[0].value,
                 keluar: row.querySelectorAll('.form-input-time')[1].value,
-                lembur: row.querySelector('.select-overtime').value
+                lembur: jamLembur,
+                gaji: gajiHariIni
             });
         });
-        localStorage.setItem('db_money_neon_glow_v13', JSON.stringify(storage));
+
+        document.getElementById('grand-total-salary').innerText = `Rp ${formatRupiah(akumulasiGajiTotal)}`;
+        localStorage.setItem('db_money_salary_final_v16', JSON.stringify(storage));
     }
 
     function muatDataApp() {
-        const data = localStorage.getItem('db_money_neon_glow_v13');
+        const data = localStorage.getItem('db_money_salary_final_v16');
         if (data) { 
-            JSON.parse(data).forEach(d => renderBarisTabel(d)); 
+            JSON.parse(data).forEach(d => renderBarisTabel(d));
+            hitungDanSimpanData();
         } else { 
-            renderBarisTabel({ hari: "SELASA", tanggal: CONFIG_START_DATE_STR, status: "MASUK", masuk: "", keluar: "", lembur: "" }); 
-            simpanDataApp(); 
+            renderBarisTabel({ hari: "SELASA", tanggal: CONFIG_START_DATE_STR, status: "MASUK", masuk: "", keluar: "", lembur: "", gaji: GAJI_POKOK_PER_HARI }); 
+            hitungDanSimpanData(); 
         }
+    }
+
+    function formatRupiah(angka) {
+        return new Intl.NumberFormat('id-ID').format(angka);
     }
 
     function styleLembur(el) {
@@ -366,8 +377,8 @@
     }
 
     function hapusSemuaDataGlobal() {
-        if (confirm("Reset seluruh data?")) { 
-            localStorage.removeItem('db_money_neon_glow_v13'); 
+        if (confirm("Reset seluruh data? Semua riwayat pendapatan Anda akan hilang.")) { 
+            localStorage.removeItem('db_money_salary_final_v16'); 
             location.reload(); 
         }
     }
