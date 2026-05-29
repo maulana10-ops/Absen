@@ -3,282 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Presensi Auto-Save</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Money Management - Neon Glow Alert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #10b981;
-            --primary-hover: #059669;
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --text-main: #000000;
-            --text-muted: #475569;
-            --border-color: #cbd5e1;
-            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --bg-page: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #022c22 100%);
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --primary-teal: #2dd4bf;
+            --border-neon: rgba(45, 212, 191, 0.4); 
+            --neon-glow: 0 0 10px rgba(45, 212, 191, 0.25);
+            --danger: #f43f5e;
+            --radius-xl: 24px;
+            --radius-md: 12px;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            margin: 0;
-            padding: 24px 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-page);
+            background-attachment: fixed;
+            color: #f8fafc;
+            padding: 20px 12px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
+        .dashboard-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .app-header {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: white;
-            padding: 24px 28px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
+        /* --- HEADER DASHBOARD --- */
+        .main-header {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-neon);
+            box-shadow: var(--neon-glow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: var(--radius-xl);
+            text-align: center;
         }
 
-        .app-header h1 { margin: 0; font-size: 1.35rem; font-weight: 700; }
-        .app-header p { margin: 4px 0 0 0; font-size: 0.85rem; color: #94a3b8; }
+        .brand-title h1 { font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
         
-        .btn-add-day {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 12px 20px;
+        /* --- ANIMASI TEKS BERKEDIP MERAH TERANG --- */
+        .alert-text {
             font-size: 0.85rem;
+            margin-top: 8px;
             font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-            transition: 0.2s;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+            animation: blinkRed 1.5s infinite ease-in-out;
         }
 
-        .btn-add-day:hover { transform: translateY(-1px); }
+        @keyframes blinkRed {
+            0%, 100% {
+                color: #ff2a5f;
+                text-shadow: 0 0 4px rgba(255, 42, 95, 0.3);
+            }
+            50% {
+                color: #ffcbd7; /* Meredup ke warna pink sangat muda saat berkedip */
+                text-shadow: 0 0 15px rgba(255, 42, 95, 0.8), 0 0 30px rgba(255, 42, 95, 0.4);
+            }
+        }
 
-        .table-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 2px solid var(--border-color);
+        /* --- CONTAINER KARTU --- */
+        .wrapper-card {
+            background: transparent;
+            border-radius: var(--radius-xl);
             overflow: hidden;
         }
 
         table { width: 100%; border-collapse: collapse; }
 
-        th {
-            background-color: #f1f5f9;
-            color: #000000;
-            font-weight: 700;
-            font-size: 0.8rem;
+        thead { display: none; } /* Tersembunyi untuk tampilan mobile card yang rapi */
+        
+        tr {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-neon);
+            box-shadow: var(--neon-glow);
+            border-radius: var(--radius-xl);
+            margin-bottom: 20px;
+        }
+
+        td {
+            display: block;
+            width: 100% !important;
+            padding: 0 !important;
+            border: none !important;
+            background: transparent !important;
+        }
+
+        .bg-header-mobile {
+            padding-bottom: 15px !important;
+            border-bottom: 1px solid var(--border-neon) !important;
+            margin-bottom: 5px;
+        }
+
+        .day-group-cell {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+            text-align: center;
+        }
+        
+        .day-label-main { 
+            font-weight: 800; 
+            font-size: 1.4rem; 
+            color: var(--primary-teal); 
+            text-shadow: 0 0 10px rgba(45, 212, 191, 0.4); 
+            text-transform: uppercase; 
+            margin-bottom: 5px;
+        }
+
+        /* --- FORM CONTROLS --- */
+        .form-input-time, .form-select-custom, .form-input-date {
+            border: 1.5px solid var(--border-neon);
+            box-shadow: var(--neon-glow);
+            border-radius: var(--radius-md);
+            padding: 12px; font-family: inherit; font-size: 1rem; font-weight: 600;
+            width: 100%; text-align: center; color: #ffffff !important;
+            background-color: rgba(15, 23, 42, 0.8) !important;
+            transition: all 0.25s ease-in-out;
+            outline: none;
+        }
+        
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="date"]::-webkit-calendar-picker-indicator { 
+            filter: invert(1); 
+            cursor: pointer;
+        }
+
+        .form-input-time:focus, .form-select-custom:focus, .form-input-date:focus {
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+            background-color: rgba(20, 30, 50, 0.9) !important;
+        }
+
+        .active-overtime { 
+            background-color: rgba(251, 191, 36, 0.1) !important; 
+            color: #fbbf24 !important; 
+            border-color: rgba(251, 191, 36, 0.6) !important; 
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.3) !important;
+        }
+
+        .mobile-grid-time {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .label-mobile-only {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--primary-teal);
             text-transform: uppercase;
-            padding: 16px;
-            border: 1px solid var(--border-color);
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(45, 212, 191, 0.3);
         }
 
-        th:first-child { text-align: left; }
-
-        td { padding: 12px 16px; border: 1px solid var(--border-color); text-align: center; }
-
-        .day-combine-cell { display: flex; align-items: center; gap: 12px; text-align: left; }
-        .day-name { font-weight: 700; color: #000000; }
-        .date-badge { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
-
-        .status-checkbox {
-            appearance: none; width: 22px; height: 22px; border: 2px solid var(--border-color);
-            border-radius: 6px; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; background: #fff;
-        }
-        .status-checkbox:checked { background: #10b981; border-color: #10b981; }
-        .status-checkbox:checked::before { content: "✓"; color: white; font-weight: 900; }
-
-        .input-time, .select-overtime {
-            border: 1.5px solid var(--border-color); border-radius: 8px; padding: 8px;
-            font-family: inherit; font-size: 0.95rem; color: #000000;
-            width: 100%; box-sizing: border-box; text-align: center; font-weight: 500;
+        /* Tombol Hapus */
+        .td-action {
+            margin-top: 5px;
+            padding-top: 15px !important;
+            border-top: 1px solid var(--border-neon) !important;
         }
 
-        .has-overtime { background-color: #fff7ed !important; color: #ea580c !important; border-color: #f97316 !important; font-weight: 700; }
-
-        .mobile-label { display: none; }
-
-        @media (max-width: 650px) {
-            thead { display: none; }
-            tr { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 8px solid #cbd5e1; }
-            td { display: flex; flex-direction: column; align-items: flex-start; padding: 15px !important; border: 0.5px solid var(--border-color) !important; background: #fff; }
-            .td-day-block { grid-column: span 2; background: #f8fafc; }
-            .td-overtime-block { grid-column: span 2; }
-            .mobile-label { display: block; font-size: 0.75rem; color: #000000; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+        .btn-delete-row {
+            width: 100%;
+            background-color: rgba(244, 63, 94, 0.05); color: var(--danger); 
+            border: 1.5px solid rgba(244, 63, 94, 0.4);
+            box-shadow: 0 0 8px rgba(244, 63, 94, 0.15);
+            padding: 14px; border-radius: 12px; cursor: pointer; transition: 0.2s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            font-weight: 700; font-size: 0.85rem;
         }
+        .btn-delete-row:hover { 
+            background-color: var(--danger); color: white; 
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.5);
+            border-color: var(--danger);
+        }
+
+        /* Control Panel Utama */
+        .control-panel { display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 15px; }
+        
+        .btn-action {
+            background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+            border: 1px solid var(--primary-teal);
+            box-shadow: 0 5px 15px rgba(13, 148, 136, 0.3);
+            color: white; padding: 16px 32px; font-size: 1rem;
+            font-weight: 800; border-radius: 16px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 12px;
+            transition: 0.3s; width: 100%; justify-content: center;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(45, 212, 191, 0.5); }
+        .btn-reset-db { color: #94a3b8; background: none; border: none; cursor: pointer; font-weight: 600; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="app-header">
-        <div>
+<div class="dashboard-container">
+    <header class="main-header">
+        <div class="brand-title">
             <h1>DATA KEHADIRAN KERJA</h1>
-            <p>Data tersimpan otomatis, mulai dari 26 Mei 2026</p>
+            <p class="alert-text">Selalu isi data kehadiran ini, untuh bahan data evaluasi dan rekapitulasi kehadiran kerja</p>
         </div>
-        <button class="btn-add-day" onclick="tambahHariBaru()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Tambah Hari
-        </button>
-    </div>
+    </header>
     
-    <div class="table-card">
+    <div class="wrapper-card">
         <table>
-            <thead>
-                <tr>
-                    <th style="text-align: left;">Hari / Tanggal</th>
-                    <th>Jam Masuk</th>
-                    <th>Jam Keluar</th>
-                    <th>Keterangan Lembur</th>
-                </tr>
-            </thead>
-            <tbody id="attendance-rows">
-                </tbody>
+            <tbody id="attendance-rows"></tbody>
         </table>
     </div>
-    <button onclick="hapusSemuaData()" style="margin-top: 20px; color: #ef4444; background: none; border: none; cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Hapus Semua Data & Reset</button>
+    
+    <div class="control-panel">
+        <button class="btn-action" onclick="tambahHariBaru()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            TAMBAH LOG HARI
+        </button>
+        <button class="btn-reset-db" onclick="hapusSemuaDataGlobal()">Reset Data</button>
+    </div>
 </div>
 
 <script>
     const namaHariList = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
-    
-    // Inisialisasi awal saat pertama kali dibuka kosong (26 Mei 2026)
-    const TANGGAL_AWAL_DEFAULT = new Date(2026, 4, 26); // Bulan Mei di JS adalah index 4
+    const CONFIG_START_DATE_STR = "2026-05-26"; 
 
-    window.onload = function() {
-        loadData();
-    };
+    window.onload = function() { muatDataApp(); };
 
     function tambahHariBaru() {
         const tbody = document.getElementById('attendance-rows');
-        let tanggalTarget = new Date(TANGGAL_AWAL_DEFAULT);
+        let tanggalTarget = new Date(CONFIG_START_DATE_STR);
 
         if (tbody.rows.length > 0) {
-            // Jika sudah ada baris, ambil tanggal baris terakhir dan tambahkan 1 hari
-            const lastDateString = tbody.lastElementChild.querySelector('.date-badge').innerText;
-            const parts = lastDateString.split('/');
-            tanggalTarget = new Date(parts[2], parts[1] - 1, parts[0]);
-            tanggalTarget.setDate(tanggalTarget.getDate() + 1);
+            const lastDateVal = tbody.lastElementChild.querySelector('.form-input-date').value;
+            if (lastDateVal) {
+                tanggalTarget = new Date(lastDateVal);
+                tanggalTarget.setDate(tanggalTarget.getDate() + 1);
+            }
         }
 
-        const dataBaru = {
-            hari: namaHariList[tanggalTarget.getDay()],
-            tanggal: formatDate(tanggalTarget),
-            status: true,
-            masuk: "09:00",
-            keluar: "17:00",
-            lembur: ""
-        };
+        let yyyy = tanggalTarget.getFullYear();
+        let mm = String(tanggalTarget.getMonth() + 1).padStart(2, '0');
+        let dd = String(tanggalTarget.getDate()).padStart(2, '0');
+        let stringTanggal = `${yyyy}-${mm}-${dd}`;
 
-        buatBarisTabel(dataBaru);
-        saveData();
+        renderBarisTabel({
+            hari: namaHariList[tanggalTarget.getDay()],
+            tanggal: stringTanggal,
+            status: "MASUK",
+            masuk: "",
+            keluar: "",
+            lembur: ""
+        });
+        simpanDataApp();
     }
 
-    function buatBarisTabel(data) {
+    function renderBarisTabel(data) {
         const tbody = document.getElementById('attendance-rows');
         const row = tbody.insertRow(-1);
 
         row.innerHTML = `
-            <td class="td-day-block">
-                <div class="day-combine-cell">
-                    <input type="checkbox" class="status-checkbox" ${data.status ? 'checked' : ''} onchange="saveData()">
-                    <div class="day-info">
-                        <span class="day-name">${data.hari}</span>
-                        <span class="date-badge">${data.tanggal}</span>
-                    </div>
+            <td class="bg-header-mobile">
+                <div class="day-group-cell">
+                    <span class="day-label-main">${data.hari}</span>
+                    <input type="date" class="form-input-date" value="${data.tanggal}" onchange="updateHariOtomatis(this)">
                 </div>
             </td>
             <td>
-                <span class="mobile-label">Jam Masuk</span>
-                <input type="time" class="input-time" value="${data.masuk}" onchange="saveData()">
+                <span class="label-mobile-only">Status Kerja</span>
+                <select class="form-select-custom" onchange="simpanDataApp()">
+                    <option value="MASUK" ${data.status === "MASUK" ? 'selected' : ''}>✅ MASUK</option>
+                    <option value="LIBUR" ${data.status === "LIBUR" ? 'selected' : ''}>🏠 LIBUR</option>
+                    <option value="IZIN" ${data.status === "IZIN" ? 'selected' : ''}>📝 IZIN</option>
+                    <option value="SAKIT" ${data.status === "SAKIT" ? 'selected' : ''}>🤒 SAKIT</option>
+                </select>
+            </td>
+            <td class="mobile-grid-time">
+                <div>
+                    <span class="label-mobile-only">Jam Masuk</span>
+                    <input type="time" class="form-input-time" value="${data.masuk}" onchange="simpanDataApp()">
+                </div>
+                <div>
+                    <span class="label-mobile-only">Jam Keluar</span>
+                    <input type="time" class="form-input-time" value="${data.keluar}" onchange="simpanDataApp()">
+                </div>
             </td>
             <td>
-                <span class="mobile-label">Jam Keluar</span>
-                <input type="time" class="input-time" value="${data.keluar}" onchange="saveData()">
-            </td>
-            <td class="td-overtime-block">
-                <span class="mobile-label">Keterangan Lembur</span>
-                <select class="select-overtime ${data.lembur ? 'has-overtime' : ''}" onchange="styleSelect(this); saveData()">
-                    <option value="" ${data.lembur === "" ? 'selected' : ''}>-</option>
+                <span class="label-mobile-only">Lembur</span>
+                <select class="select-overtime form-select-custom ${data.lembur ? 'active-overtime' : ''}" onchange="styleLembur(this); simpanDataApp()">
+                    <option value="" ${data.lembur === "" ? 'selected' : ''}>- Tidak Lembur -</option>
                     <option value="1" ${data.lembur === "1" ? 'selected' : ''}>Lembur 1 jam</option>
                     <option value="2" ${data.lembur === "2" ? 'selected' : ''}>Lembur 2 jam</option>
                     <option value="3" ${data.lembur === "3" ? 'selected' : ''}>Lembur 3 jam</option>
                 </select>
             </td>
+            <td class="td-action">
+                <button class="btn-delete-row" onclick="hapusSatuBaris(this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Hapus Hari Ini
+                </button>
+            </td>
         `;
+        styleLembur(row.querySelector('.select-overtime'));
     }
 
-    function saveData() {
-        const rows = document.querySelectorAll('#attendance-rows tr');
-        const allData = [];
+    function updateHariOtomatis(inputDateElement) {
+        const row = inputDateElement.closest('tr');
+        const tanggalDipilih = inputDateElement.value;
+        if (tanggalDipilih) {
+            const objekTanggal = new Date(tanggalDipilih);
+            row.querySelector('.day-label-main').innerText = namaHariList[objekTanggal.getDay()];
+        }
+        simpanDataApp();
+    }
 
+    function hapusSatuBaris(btn) {
+        if (confirm("Hapus catatan ini?")) { btn.closest('tr').remove(); simpanDataApp(); }
+    }
+
+    function simpanDataApp() {
+        const rows = document.querySelectorAll('#attendance-rows tr');
+        const storage = [];
         rows.forEach(row => {
-            allData.push({
-                hari: row.querySelector('.day-name').innerText,
-                tanggal: row.querySelector('.date-badge').innerText,
-                status: row.querySelector('.status-checkbox').checked,
-                masuk: row.querySelectorAll('.input-time')[0].value,
-                keluar: row.querySelectorAll('.input-time')[1].value,
+            storage.push({
+                hari: row.querySelector('.day-label-main').innerText,
+                tanggal: row.querySelector('.form-input-date').value,
+                status: row.querySelectorAll('.form-select-custom')[0].value,
+                masuk: row.querySelectorAll('.form-input-time')[0].value,
+                keluar: row.querySelectorAll('.form-input-time')[1].value,
                 lembur: row.querySelector('.select-overtime').value
             });
         });
-
-        localStorage.setItem('attendance_storage_v2', JSON.stringify(allData));
+        localStorage.setItem('db_money_neon_glow_v13', JSON.stringify(storage));
     }
 
-    function loadData() {
-        const storage = localStorage.getItem('attendance_storage_v2');
-        if (storage) {
-            const allData = JSON.parse(storage);
-            allData.forEach(data => buatBarisTabel(data));
-        } else {
-            // Jika memori kosong, langsung buat baris pertama default: SELASA 26/05/2026
-            buatBarisTabel({
-                hari: namaHariList[TANGGAL_AWAL_DEFAULT.getDay()],
-                tanggal: formatDate(TANGGAL_AWAL_DEFAULT),
-                status: true,
-                masuk: "09:00",
-                keluar: "17:00",
-                lembur: ""
-            });
-            saveData();
+    function muatDataApp() {
+        const data = localStorage.getItem('db_money_neon_glow_v13');
+        if (data) { 
+            JSON.parse(data).forEach(d => renderBarisTabel(d)); 
+        } else { 
+            renderBarisTabel({ hari: "SELASA", tanggal: CONFIG_START_DATE_STR, status: "MASUK", masuk: "", keluar: "", lembur: "" }); 
+            simpanDataApp(); 
         }
     }
 
-    function formatDate(date) {
-        let dd = String(date.getDate()).padStart(2, '0');
-        let mm = String(date.getMonth() + 1).padStart(2, '0');
-        let yyyy = date.getFullYear();
-        return `${dd}/${mm}/${yyyy}`;
+    function styleLembur(el) {
+        if (!el) return;
+        if (el.value !== "") el.classList.add('active-overtime');
+        else el.classList.remove('active-overtime');
     }
 
-    function styleSelect(select) {
-        if (select.value !== "") select.classList.add('has-overtime');
-        else select.classList.remove('has-overtime');
-    }
-
-    function hapusSemuaData() {
-        if (confirm("Hapus semua catatan? Data tidak bisa dikembalikan.")) {
-            localStorage.removeItem('attendance_storage_v2');
-            location.reload();
+    function hapusSemuaDataGlobal() {
+        if (confirm("Reset seluruh data?")) { 
+            localStorage.removeItem('db_money_neon_glow_v13'); 
+            location.reload(); 
         }
     }
 </script>
